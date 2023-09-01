@@ -62,16 +62,46 @@ data = digits.images.reshape((n_samples, -1))
 # Create a classifier: a support vector classifier
 clf = svm.SVC(gamma=0.001)
 
-# Split data into 50% train and 50% test subsets
-X_train, X_test, y_train, y_test = train_test_split(
-    data, digits.target, test_size=0.5, shuffle=False
-)
+# Split data into 40% train, 30% dev and 30% test subsets
+def split_train_dev_test(X, y, test_size, dev_size):
+    X_train, X_test, y_train, y_test = train_test_split(
+        X, y, test_size=test_size, shuffle=True
+    )
 
-# Learn the digits on the train subset
+    #print(X_train.shape, y_train.shape)
+
+    X_train, X_test, dev_train, dev_test = train_test_split(
+        X, y, test_size=dev_size, shuffle=False
+    )
+
+    return X_train, X_test, y_train, y_test, dev_train, dev_test
+
+X_train, X_test, y_train, y_test, dev_train, dev_test = split_train_dev_test(data, digits.target, 0.3, 0.3)
+
+
+
+def predict_and_eval(model, X_test, y_test):
+    predicted = model.predict(X_test)
+    return predicted
+
+clf.fit(X_train, dev_train)
+predicted = predict_and_eval(clf, X_test, dev_test)
+print("Prediction for Validation data: ", predicted)
+
 clf.fit(X_train, y_train)
+predicted = predict_and_eval(clf, X_test, y_test)
+print("Prediction for Test data: ", predicted)
+# # Learn the digits on the train subset
 
-# Predict the value of the digit on the test subset
-predicted = clf.predict(X_test)
+
+# # Predict the value of the digit on the test subset
+# predicted = clf.predict(X_test)
+
+# # Learn the digits on the train subset
+# clf.fit(X_train, y_train)
+
+# # Predict the value of the digit on the test subset
+# predicted = clf.predict(X_test)
 
 ###############################################################################
 # Below we visualize the first 4 test samples and show their predicted
