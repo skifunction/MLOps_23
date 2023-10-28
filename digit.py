@@ -39,10 +39,8 @@ for test_s in test_size:
         print(f"Best Hyperparameters for Decision tree this run: ( criterion : {best_hparams_DT[0]} , Splitter : {best_hparams_DT[1]} )")
 
 confusion_SVM = metrics.ConfusionMatrixDisplay.from_predictions(y_test, pred_svm)
-confusion_SVM.figure_.suptitle("Confusion Matrix for SVM")
-print(f"Confusion matrix:\n{confusion_SVM.confusion_matrix}")
+print(f"Confusion matrix for SVM:\n{confusion_SVM.confusion_matrix}")
 
 
 confusion_DT = metrics.ConfusionMatrixDisplay.from_predictions(y_test, pred_DT)
-confusion_DT.figure_.suptitle("Confusion Matrix for DT")
-print(f"Confusion matrix:\n{confusion_DT.confusion_matrix}")
+print(f"Confusion matrix for DT:\n{confusion_DT.confusion_matrix}")
