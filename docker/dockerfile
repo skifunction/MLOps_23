@@ -14,8 +14,6 @@ RUN pip3 install -r /digits/requirement.txt
 
 WORKDIR /digits
 
-RUN chmod +x docker_run.sh
-
-CMD ["sh", "docker_run.sh"]
+CMD ["sh", "-c", "python digit.py && pytest"]
 
 # CMD ["pytest"]
