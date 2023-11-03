@@ -1,27 +1,56 @@
 from utils import *
 
-digits = data()
-n_samples = len(digits.images)
-data = digits.images.reshape((n_samples, -1))
+epochs = 5
+X, y = read_digits()
 
-gamma = [1, 0.1, 0.01, 0.001, 0.0001, 0.00001]
-c = [1, 1.02, 1.04, 1.07, 1.081]
+classifier_param_dict = {}
 
-possible_combination = []
+gamma = [0.0001, 0.0005, 0.001, 0.01, 0.1, 1]
+C = [0.1, 1, 10, 100, 1000]
+h_params={}
+h_params['gamma'] = gamma
+h_params['C'] = C
+h_params_combinations = get_hyperparameter_combinations(h_params)
+classifier_param_dict['svm'] = h_params_combinations
 
-possible_combination.append(gamma)
-possible_combination.append(c)
+max_depth = [5, 10, 15, 20, 50, 100]
+h_params_tree = {}
+h_params_tree['max_depth'] = max_depth
+h_params_trees_combinations = get_hyperparameter_combinations(h_params_tree)
+classifier_param_dict['tree'] = h_params_trees_combinations
 
-test_size = [0.1, 0.2, 0.3]
-dev_size = [0.1, 0.2, 0.3]
 
-for test_s in test_size:
-    for dev_s in dev_size:
-        train_s = 1 - dev_s - test_s
+results = []
 
-        X_train, X_test, y_train, y_test, dev_x, dev_y = split_train_dev_test(data, digits.target, test_s, dev_s)
-        
-        best_hparams, best_model, best_accuracy = tune_hparams(X_train, y_train, dev_x, dev_y, possible_combination)
-        
-        print(f"test_size={test_s} dev_size={dev_s} train_size={train_s:.0f} train_acc={best_accuracy:.2f} dev_acc={best_accuracy:.2f} test_acc={best_accuracy:.2f}")
-        print(f"Best Hyperparameters for this run: ( gamma : {best_hparams[0]} , C : {best_hparams[1]} )")
+# test_sizes =  [0.1, 0.2, 0.3]
+# dev_sizes  =  [0.1, 0.2, 0.3]
+
+test_sizes =  [0.3]
+dev_sizes  =  [0.3]
+
+
+for cur_run_i in range(epochs):
+    
+    for test_size in test_sizes:
+        for dev_size in dev_sizes:
+            
+            train_size = 1 - test_size - dev_size                
+            
+            X_train, X_test, X_dev, y_train, y_test, y_dev = train_test_dev_split(X, y, test_size=test_size, dev_size=dev_size)
+
+            for model_type in classifier_param_dict:
+                current_hparams = classifier_param_dict[model_type]
+                best_hparams, best_model_path, best_accuracy  = tune_hparams(X_train, y_train, X_dev, 
+                y_dev, current_hparams, model_type)        
+       
+                best_model = load(best_model_path) 
+
+                test_acc = predict_and_eval(best_model, X_test, y_test)
+                train_acc = predict_and_eval(best_model, X_train, y_train)
+                dev_acc = best_accuracy
+
+                print("{}\ttest_size={:.2f} dev_size={:.2f} train_size={:.2f} train_acc={:.2f} dev_acc={:.2f} test_acc={:.2f}".format(model_type, test_size, dev_size, train_size, train_acc, dev_acc, test_acc))
+                cur_run_results = {'model_type': model_type, 'run_index': cur_run_i, 'train_acc' : train_acc, 'dev_acc': dev_acc, 'test_acc': test_acc}
+                results.append(cur_run_results)
+
+print(pd.DataFrame(results).groupby('model_type').describe().T)
