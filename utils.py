@@ -1,50 +1,74 @@
-from sklearn import datasets, metrics, svm
 from sklearn.model_selection import train_test_split
+from sklearn import svm, tree, datasets, metrics
+from joblib import dump, load
+import pandas as pd
 
-def data():
-    return datasets.load_digits()
+def read_digits():
+    digits = datasets.load_digits()
+    X = digits.images
+    size = len(X)
+    X = X.reshape((size, -1))
+    y = digits.target
+    return X, y 
 
-def split_train_dev_test(X, y, test_size, dev_size):
-    train_set = test_size + dev_size
-    dev_size = dev_size/(1-test_size)
+def get_combinations(param_name, param_values, base_combinations):    
+    new_combinations = []
+    for value in param_values:
+        for combination in base_combinations:
+            combination[param_name] = value
+            new_combinations.append(combination.copy())    
+    return new_combinations
 
+def get_hyperparameter_combinations(dict_of_param_lists):    
+    base_combinations = [{}]
+    for param_name, param_values in dict_of_param_lists.items():
+        base_combinations = get_combinations(param_name, param_values, base_combinations)
+    return base_combinations
+
+def split_data(x, y, test_size, random_state=30):
     X_train, X_test, y_train, y_test = train_test_split(
-        X, y, test_size= test_size, shuffle=False
+    x, y, test_size=test_size, shuffle = True, random_state=random_state
     )
+    return X_train, X_test, y_train, y_test
 
-    #print(X_train.shape, y_train.shape)
 
-    X_train, dev_x, y_train, dev_y = train_test_split(
-        X_train, y_train, test_size=dev_size, shuffle=False
-    )
+def train_test_dev_split(X, y, test_size, dev_size):
+    X_train_dev, X_test, Y_train_Dev, y_test =  split_data(X, y, test_size=test_size, random_state=1)
+    print(f"train + dev data size = {len(Y_train_Dev)} test size = {len(y_test)}")
+    
+    X_train, X_dev, y_train, y_dev = split_data(X_train_dev, Y_train_Dev, dev_size/(1-test_size), random_state=42)
+        
+    return X_train, X_test, X_dev, y_train, y_test, y_dev
 
-    return X_train, X_test, y_train, y_test, dev_x, dev_y
+def train_model(x, y, model_params, model_type="svm"):
+    if model_type == "svm":
+        clf = svm.SVC
+    elif model_type == "tree":
+        clf = tree.DecisionTreeClassifier
+    
+    model = clf(**model_params)
 
-def training_data(x, y, parameters):
-    clf = svm.SVC(gamma=parameters['gamma'], C=parameters['C'])
-    clf.fit(x, y)
-    return clf
+    model.fit(x, y)
+    return model
+
+def tune_hparams(X_train, y_train, X_dev, y_dev, h_params_combinations, model_type="svm"):
+    
+    best_accuracy = -1
+    best_model_path = ""
+
+    for h_params in h_params_combinations:
+        model = train_model(X_train, y_train, h_params, model_type=model_type)      
+        current_accuracy = predict_and_eval(model, X_dev, y_dev)
+        
+        if current_accuracy > best_accuracy:
+            best_accuracy = current_accuracy
+            best_hparams = h_params
+            best_model_path = f"./models/{model_type}_" +"_".join([f"{a}:{b}" for a, b in h_params.items()]) + ".joblib"
+            best_model = model
+
+    dump(best_model, best_model_path) 
+    return best_hparams, best_model_path, best_accuracy 
 
 def predict_and_eval(model, X_test, y_test):
     predicted = model.predict(X_test)
-    evaluation = metrics.accuracy_score(y_pred = predicted, y_true=y_test)
-    return evaluation
-
-def tune_hparams(X_train, y_train, dev_x, dev_y, list_of_all_param_combination):
-    best_accuracy = -1
-    best_model=None
-    best_hparams = None
-
-    for i in list_of_all_param_combination[0]:
-        for j in list_of_all_param_combination[1]:
-            model = training_data(X_train, y_train, {'gamma': i,'C': j})
-
-            val_accuracy = predict_and_eval(model, dev_x, dev_y)
-            
-            if val_accuracy > best_accuracy:
-                best_hparams = [i, j]
-                best_accuracy = val_accuracy
-                best_model = model
-    
-    return best_hparams, best_model, best_accuracy  
-    
+    return metrics.accuracy_score(y_test, predicted)
