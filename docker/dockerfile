@@ -11,5 +11,6 @@ RUN pip3 install -r /digits/requirement.txt
 # no need fr conda or venv
 # requirements installation
 
-# CMD ["pytest"]
-CMD ["echo", "our first cmd line"]
+WORKDIR /digits
+
+CMD ["pytest"]
