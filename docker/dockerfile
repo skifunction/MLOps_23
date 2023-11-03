@@ -2,6 +2,7 @@
 FROM python:3.9.17
 # copy the whole code
 COPY . /digits/
+
 # RUN apt-get update
 # RUN apt-get install -y python3 python3-pip
 RUN pip3 install -r /digits/requirement.txt
@@ -13,4 +14,8 @@ RUN pip3 install -r /digits/requirement.txt
 
 WORKDIR /digits
 
-CMD ["pytest"]
+RUN chmod +x docker_run.sh
+
+CMD ["sh", "docker_run.sh"]
+
+# CMD ["pytest"]

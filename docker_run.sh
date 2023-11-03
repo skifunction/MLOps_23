@@ -1,0 +1,2 @@
+python digit.py
+pytest
