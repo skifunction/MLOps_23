@@ -24,10 +24,10 @@ def dummy_hyperparameter():
 def dummy_data():
     X, y = read_digits()
     
-    X_train = X[:100, :, :]
+    X_train = X[:100, :]
     y_train = y[:100]
 
-    X_dev = X[:50, :, :]
+    X_dev = X[:50, :]
     y_dev = y[:50]
 
     return X_train, X_dev, y_train, y_dev 
@@ -52,7 +52,7 @@ def test_model_saving():
 def test_data_splitting():
     X, y = read_digits()
     
-    X = X[:100, :, :]
+    X = X[:100, :]
     y = y[:100]
     
     test_size = .1
