@@ -1,1 +1,1 @@
-Folder where the models would be saved. Do not remove this file otherwise the folder won't be able later on.
+Folder where the models would be saved.
