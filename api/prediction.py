@@ -15,8 +15,7 @@ import numpy as np
 
 app = Flask(__name__)
 
-model = load('./models/svm_gamma:0.001_C:1.joblib')
-
+model = load('./models/tree_max_depth:20.joblib')
 
 @app.route("/hello/<val>")
 def hello_world(val):
@@ -37,7 +36,11 @@ def compare_digits():
         # Compare the predicted digits and return the result
         result = digit1 == digit2
 
-        return jsonify({'result': result})
+        if result:
+            return jsonify({'Result': "Both images are the same", 'Status' : result})
+        else:
+            return jsonify({'Result': "Both images are the different", 'Status' : result})
+
     except Exception as e:
         return jsonify({'error': str(e)})
     
