@@ -1,11 +1,3 @@
-#!/bin/bash
+sudo docker build -t digits:v1 -f docker/dockerfile .
 
-IMAGE="digits:v"
-
-#creating volume
-docker volume create models
-
-#building docker
-docker build -t $IMAGE -f docker/dockerfile .
-docker run -d --name MODELS -v models:/digits/models $IMAGE
-docker cp MODELS:/digits/models/ /mnt/c/Users/sujay/ML_OPS/MLOps_23
+sudo docker run -v /mnt/c/Users/sujay/ML_OPS/MLOps_23/models/:/digits/models digits:v1
