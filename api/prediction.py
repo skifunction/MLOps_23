@@ -19,7 +19,7 @@ app = Flask(__name__)
 current_directory = os.getcwd()
 
 # Construct the path to the file just outside the working directory
-folder_path = os.path.join(current_directory, 'models')
+folder_path = os.path.join(current_directory, '..', 'models')
 extension = '.joblib'
 all_files = os.listdir(folder_path)
 matching_files = [file for file in all_files if file.endswith(extension)]
@@ -37,15 +37,17 @@ def compare_digits():
     try:
         # Get the two image files from the request
         data = request.get_json()  # Parse JSON data from the request body
-        image1 = data.get('image1', [])
-        image2 = data.get('image2', [])
+        image0 = data.get('image1', [])
+        image1 = data.get('image2', [])
+
 
         # Preprocess the images and make predictions
+        digit0 = predict_digit(image0)
         digit1 = predict_digit(image1)
-        digit2 = predict_digit(image2)
+
 
         # Compare the predicted digits and return the result
-        result = digit1 == digit2
+        result = digit0 == digit1
 
         if result:
             return jsonify({'Result': "Both images are the same", 'Status' : result})
