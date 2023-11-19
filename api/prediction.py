@@ -1,5 +1,7 @@
 import matplotlib.pyplot as plt
-import sys
+# import sys
+import os
+
 # Import datasets, classifiers and performance metrics
 from sklearn import datasets, metrics, svm
 from sklearn.model_selection import train_test_split
@@ -11,12 +13,20 @@ import numpy as np
 import pandas as pd
 from flask import Flask, request, jsonify
 from PIL import Image
-import numpy as np
 
 app = Flask(__name__)
+# Get the current working directory
+current_directory = os.getcwd()
 
-model = load('./models/svm_gamma:0.001_C:1.joblib')
+# Construct the path to the file just outside the working directory
+folder_path = os.path.join(current_directory, 'models')
+extension = '.joblib'
+all_files = os.listdir(folder_path)
+matching_files = [file for file in all_files if file.endswith(extension)]
 
+file_path = os.path.join(folder_path, matching_files[0])
+
+model = load(file_path)
 
 @app.route("/hello/<val>")
 def hello_world(val):
@@ -37,7 +47,11 @@ def compare_digits():
         # Compare the predicted digits and return the result
         result = digit1 == digit2
 
-        return jsonify({'result': result})
+        if result:
+            return jsonify({'Result': "Both images are the same", 'Status' : result})
+        else:
+            return jsonify({'Result': "Both images are the different", 'Status' : result})
+
     except Exception as e:
         return jsonify({'error': str(e)})
     

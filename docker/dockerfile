@@ -1,13 +1,22 @@
 FROM python:3.10.13
-COPY . /digits/ 
-# RUN apt-get update 
-# RUN apt-get install -y python3 python3-pip
-RUN pip3 install -r /digits/requirement.txt 
-WORKDIR /digits 
-# CMD ["python", "digit.py"]
 
-ENV FLASK_APP=api/app
+# Set the working directory
+WORKDIR /digits
 
-# EXPOSE 5000
+# Copy the requirements file from the root directory
+COPY requirement.txt /digits/
 
-CMD ["flask", "run", "--host=0.0.0.0"]
+# Install dependencies
+RUN pip3 install -r requirement.txt
+
+# Copy the application code
+COPY . /digits/
+
+# Set the FLASK_APP environment variable
+ENV FLASK_APP=api/prediction
+
+# Expose the Flask app's port
+EXPOSE 80
+
+# Start the Flask app when the container starts
+CMD ["flask", "run", "--host=0.0.0.0", "--port=80"]
