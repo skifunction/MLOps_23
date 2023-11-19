@@ -24,5 +24,7 @@ jobs:
         run: pytest
       - name: Run experiment
         run: python digit.py
+      - name: Run PyTest for post_Predict
+        run: pytest test_post_predict.py
       # - name: Run Docker Container
       #   run: bash ./docker_run.sh
