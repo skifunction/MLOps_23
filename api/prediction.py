@@ -51,7 +51,7 @@ def load_model():
 def hello_world(val):
     return "<p>Hello, World!</p>" + val 
 
-@app.route('/predict/<model>', methods=['POST'])
+@app.route('/predict/<model>', methods=['GET', 'POST'])
 def compare_digits(model):
     try:
         # Get the two image files from the request
