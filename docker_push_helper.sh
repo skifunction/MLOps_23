@@ -1,0 +1,2 @@
+az acr build --image majormlops.azurecr.io/DependencyImage:latest --registry majormlops --resource-group majormlops -f docker/dockerfile .
+az acr build --image majormlops.azurecr.io/FinalDockerfile:latest --registry majormlops --resource-group majormlops -f docker/dockerfile.final .

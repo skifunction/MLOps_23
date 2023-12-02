@@ -1,0 +1,7 @@
+FROM dependencyimage:latest
+
+WORKDIR /digits
+
+COPY . .
+
+CMD ["pytest"]
