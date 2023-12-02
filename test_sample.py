@@ -76,8 +76,7 @@ def test_logistic_regression():
     assert isinstance(loaded_model, LogisticRegression)
 
 def test_name_model():
-    
-    # Load the model
+
     model_filename = f"./models/{roll_no}_lr_{solver}.joblib"
     loaded_model = load(model_filename)
 

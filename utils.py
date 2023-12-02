@@ -78,7 +78,7 @@ def tune_hparams(X_train, y_train, X_dev, y_dev, h_params_combinations, model_ty
         if current_accuracy > best_accuracy and model_type != 'logistic':
             best_accuracy = current_accuracy
             best_hparams = h_params
-            best_model_path = f"./models/D23CSA003_lr_" +"_".join([f"{a}:{b}" for a, b in h_params.items()]) + ".joblib"
+            best_model_path = f"./models/D23CSA003_" +"_".join([f"{a}:{b}" for a, b in h_params.items()]) + ".joblib"
             # best_model_path = f"./models/D23CSA003_lr_{model_type}.joblib"
             best_model = model
         else :
