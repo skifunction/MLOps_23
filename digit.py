@@ -20,13 +20,19 @@ h_params_trees_combinations = get_hyperparameter_combinations(h_params_tree)
 classifier_param_dict['tree'] = h_params_trees_combinations
 
 
+solver = ['lbfgs', 'liblinear', 'newton-cg', 'newton-cholesky', 'sag', 'saga']
+h_params = {}
+h_params['solver'] = solver
+h_params_logistic_combinations = get_hyperparameter_combinations(h_params)
+classifier_param_dict['logistic'] = h_params_logistic_combinations
+
 results = []
 
 # test_sizes =  [0.1, 0.2, 0.3]
 # dev_sizes  =  [0.1, 0.2, 0.3]
 
-test_sizes =  [0.3]
-dev_sizes  =  [0.3]
+test_sizes =  [0.2]
+dev_sizes  =  [0.1]
 
 
 for cur_run_i in range(epochs):
