@@ -1,5 +1,9 @@
 from utils import *
+from joblib import dump, load
 import os
+
+roll_no = 'D23CSA003'
+solver = 'liblinear'
 
 def test_for_hparam_cominations_count():
 
@@ -63,3 +67,18 @@ def test_data_splitting():
     assert (len(X_train) == len(y_train) == 30) 
     assert (len(X_test) == len(y_test) == 10)
     assert  ((len(X_dev) == len(y_dev) == 60))
+
+def test_logistic_regression():
+
+    model_filename = f"./models/{roll_no}_lr_{solver}.joblib"
+    loaded_model = load(model_filename)
+
+    assert isinstance(loaded_model, LogisticRegression)
+
+def test_name_model():
+    
+    # Load the model
+    model_filename = f"./models/{roll_no}_lr_{solver}.joblib"
+    loaded_model = load(model_filename)
+
+    assert solver in model_filename
