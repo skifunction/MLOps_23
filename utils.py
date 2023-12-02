@@ -71,24 +71,23 @@ def tune_hparams(X_train, y_train, X_dev, y_dev, h_params_combinations, model_ty
 
     for h_params in h_params_combinations:
 
-        # for a, b in h_params.items():
-        #     print(a, b)
 
         model = train_model(X_train, y_train, h_params, model_type=model_type)      
         current_accuracy = predict_and_eval(model, X_dev, y_dev)
         
-        # if current_accuracy > best_accuracy:
-        #     best_accuracy = current_accuracy
-        #     best_hparams = h_params
-        #     best_model_path = f"./models/D23CSA003_lr_" +"_".join([f"{b}" for _, b in h_params.items()]) + ".joblib"
-        #     # best_model_path = f"./models/D23CSA003_lr_{model_type}.joblib"
-        #     best_model = model
-
-        best_model_path = f"./models/D23CSA003_lr_" +"_".join([f"{b}" for _, b in h_params.items()]) + ".joblib"
+        if current_accuracy > best_accuracy and model_type != 'logistic':
+            best_accuracy = current_accuracy
+            best_hparams = h_params
+            best_model_path = f"./models/D23CSA003_lr_" +"_".join([f"{a}:{b}" for a, b in h_params.items()]) + ".joblib"
             # best_model_path = f"./models/D23CSA003_lr_{model_type}.joblib"
-        best_model = model
+            best_model = model
+        else :
+            best_model_path = f"./models/D23CSA003_lr_" +"_".join([f"{b}" for _, b in h_params.items()]) + ".joblib"
+                # best_model_path = f"./models/D23CSA003_lr_{model_type}.joblib"
+            best_model = model
+            dump(best_model, best_model_path)
 
-        dump(best_model, best_model_path) 
+    dump(best_model, best_model_path) 
 
     return h_params, best_model_path, best_accuracy 
 
