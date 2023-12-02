@@ -5,28 +5,34 @@ X, y = read_digits()
 
 classifier_param_dict = {}
 
-gamma = [0.0001, 0.0005, 0.001, 0.01, 0.1, 1]
-C = [0.1, 1, 10, 100, 1000]
-h_params={}
-h_params['gamma'] = gamma
-h_params['C'] = C
-h_params_combinations = get_hyperparameter_combinations(h_params)
-classifier_param_dict['svm'] = h_params_combinations
+# gamma = [0.0001, 0.0005, 0.001, 0.01, 0.1, 1]
+# C = [0.1, 1, 10, 100, 1000]
+# h_params={}
+# h_params['gamma'] = gamma
+# h_params['C'] = C
+# h_params_combinations = get_hyperparameter_combinations(h_params)
+# classifier_param_dict['svm'] = h_params_combinations
 
-max_depth = [5, 10, 15, 20, 50, 100]
-h_params_tree = {}
-h_params_tree['max_depth'] = max_depth
-h_params_trees_combinations = get_hyperparameter_combinations(h_params_tree)
-classifier_param_dict['tree'] = h_params_trees_combinations
+# max_depth = [5, 10, 15, 20, 50, 100]
+# h_params_tree = {}
+# h_params_tree['max_depth'] = max_depth
+# h_params_trees_combinations = get_hyperparameter_combinations(h_params_tree)
+# classifier_param_dict['tree'] = h_params_trees_combinations
 
+
+solver = ['lbfgs', 'liblinear', 'newton-cg', 'newton-cholesky', 'sag', 'saga']
+h_params = {}
+h_params['solver'] = solver
+h_params_logistic_combinations = get_hyperparameter_combinations(h_params)
+classifier_param_dict['logistic'] = h_params_logistic_combinations
 
 results = []
 
 # test_sizes =  [0.1, 0.2, 0.3]
 # dev_sizes  =  [0.1, 0.2, 0.3]
 
-test_sizes =  [0.3]
-dev_sizes  =  [0.3]
+test_sizes =  [0.2]
+dev_sizes  =  [0.1]
 
 
 for cur_run_i in range(epochs):

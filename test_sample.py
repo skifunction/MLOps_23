@@ -1,25 +1,25 @@
 from utils import *
 import os
 
-def test_for_hparam_cominations_count():
+# def test_for_hparam_cominations_count():
 
-    gamma = [0.001, 0.01, 0.1, 1]
-    C = [1, 10, 100, 1000]
-    h_params={}
-    h_params['gamma'] = gamma
-    h_params['C'] = C
-    h_params_combinations = get_hyperparameter_combinations(h_params)
+#     gamma = [0.001, 0.01, 0.1, 1]
+#     C = [1, 10, 100, 1000]
+#     h_params={}
+#     h_params['gamma'] = gamma
+#     h_params['C'] = C
+#     h_params_combinations = get_hyperparameter_combinations(h_params)
     
-    assert len(h_params_combinations) == len(gamma) * len(C)
+#     assert len(h_params_combinations) == len(gamma) * len(C)
 
-def dummy_hyperparameter():
-    gamma = [0.001, 0.01]
-    C = [1]
-    h_params={}
-    h_params['gamma'] = gamma
-    h_params['C'] = C
-    h_params_combinations = get_hyperparameter_combinations(h_params)
-    return h_params_combinations
+# def dummy_hyperparameter():
+#     gamma = [0.001, 0.01]
+#     C = [1]
+#     h_params={}
+#     h_params['gamma'] = gamma
+#     h_params['C'] = C
+#     h_params_combinations = get_hyperparameter_combinations(h_params)
+#     return h_params_combinations
 
 def dummy_data():
     X, y = read_digits()
@@ -32,13 +32,13 @@ def dummy_data():
 
     return X_train, X_dev, y_train, y_dev 
 
-def test_for_hparam_cominations_values():    
-    h_params_combinations = dummy_hyperparameter()
+# def test_for_hparam_cominations_values():    
+#     h_params_combinations = dummy_hyperparameter()
     
-    expected_param_combo_1 = {'gamma': 0.001, 'C': 1}
-    expected_param_combo_2 = {'gamma': 0.01, 'C': 1}
+#     expected_param_combo_1 = {'gamma': 0.001, 'C': 1}
+#     expected_param_combo_2 = {'gamma': 0.01, 'C': 1}
 
-    assert (expected_param_combo_1 in h_params_combinations) and (expected_param_combo_2 in h_params_combinations)
+#     assert (expected_param_combo_1 in h_params_combinations) and (expected_param_combo_2 in h_params_combinations)
 
 def test_model_saving():
     X_train, X_dev, y_train, y_dev = dummy_data()

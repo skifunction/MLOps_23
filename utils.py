@@ -1,13 +1,23 @@
 from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
 from sklearn import svm, tree, datasets, metrics
+from sklearn.linear_model import LogisticRegression
 from joblib import dump, load
 import pandas as pd
+import warnings
+
+warnings.filterwarnings("ignore")
 
 def read_digits():
     digits = datasets.load_digits()
     X = digits.images
     size = len(X)
     X = X.reshape((size, -1))
+
+    #Answer-1
+    scaler = StandardScaler()
+    X = scaler.fit_transform(X)
+
     y = digits.target
     return X, y 
 
@@ -45,6 +55,8 @@ def train_model(x, y, model_params, model_type="svm"):
         clf = svm.SVC
     elif model_type == "tree":
         clf = tree.DecisionTreeClassifier
+    elif model_type == "logistic":
+        clf = LogisticRegression
     
     model = clf(**model_params)
 
@@ -56,18 +68,29 @@ def tune_hparams(X_train, y_train, X_dev, y_dev, h_params_combinations, model_ty
     best_accuracy = -1
     best_model_path = ""
 
+
     for h_params in h_params_combinations:
+
+        # for a, b in h_params.items():
+        #     print(a, b)
+
         model = train_model(X_train, y_train, h_params, model_type=model_type)      
         current_accuracy = predict_and_eval(model, X_dev, y_dev)
         
-        if current_accuracy > best_accuracy:
-            best_accuracy = current_accuracy
-            best_hparams = h_params
-            best_model_path = f"./models/{model_type}_" +"_".join([f"{a}:{b}" for a, b in h_params.items()]) + ".joblib"
-            best_model = model
+        # if current_accuracy > best_accuracy:
+        #     best_accuracy = current_accuracy
+        #     best_hparams = h_params
+        #     best_model_path = f"./models/D23CSA003_lr_" +"_".join([f"{b}" for _, b in h_params.items()]) + ".joblib"
+        #     # best_model_path = f"./models/D23CSA003_lr_{model_type}.joblib"
+        #     best_model = model
 
-    dump(best_model, best_model_path) 
-    return best_hparams, best_model_path, best_accuracy 
+        best_model_path = f"./models/D23CSA003_lr_" +"_".join([f"{b}" for _, b in h_params.items()]) + ".joblib"
+            # best_model_path = f"./models/D23CSA003_lr_{model_type}.joblib"
+        best_model = model
+
+        dump(best_model, best_model_path) 
+
+    return h_params, best_model_path, best_accuracy 
 
 def predict_and_eval(model, X_test, y_test):
     predicted = model.predict(X_test)
